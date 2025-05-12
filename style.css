@@ -1,0 +1,664 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --background-color: #222;
+    --text-color: #f0f0f0;
+    --card-bg: #333;
+    --canvas-border: #555;
+    --canvas-bg: #000;
+    --button-shadow: rgba(0, 0, 0, 0.3);
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
+    /* Background chính */
+    background-image: url('images/tetris-bg.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    max-width: 1000px;
+    width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+    text-align: center;
+    /* Container mờ */
+    background-color: rgba(20, 20, 20, 0.85);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.options {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: center;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.sound-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.header h1 {
+    margin-bottom: 0;
+}
+
+/* Styles cho nút Sound và Music */
+#soundBtn, #musicBtn {
+    background-color: #1DB954;
+    border: none;
+    padding: 12px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+    
+    /* Loại bỏ mọi hiệu ứng thay đổi kích thước */
+    transform: none !important;
+    transition: background-color 0.3s !important;
+    box-shadow: none !important;
+    -webkit-transform: none !important;
+    -moz-transform: none !important;
+    -ms-transform: none !important;
+    -o-transform: none !important;
+    scale: 1 !important;
+}
+
+#soundBtn {
+    background-color: #1DB954;
+}
+
+#musicBtn {
+    background-color: #8C52FF;
+}
+
+#soundBtn:hover {
+    background-color: #1AA247;
+}
+
+#musicBtn:hover {
+    background-color: #7B45DF;
+}
+
+#soundBtn:active, #musicBtn:active {
+    /* Đảm bảo không có hiệu ứng kích thước khi nhấn */
+    transform: none !important;
+    -webkit-transform: none !important;
+    -moz-transform: none !important;
+    -ms-transform: none !important;
+    -o-transform: none !important;
+    box-shadow: none !important;
+    scale: 1 !important;
+}
+
+#soundBtn:active {
+    background-color: #159940;
+}
+
+#musicBtn:active {
+    background-color: #6A3AD0;
+}
+
+#soundBtn.muted {
+    background-color: #ccc;
+}
+
+#musicBtn.muted {
+    background-color: #ccc;
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 5px 8px;
+    border-radius: 5px;
+}
+
+.volume-control label {
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.volume-control input[type="range"] {
+    width: 80px;
+    cursor: pointer;
+}
+
+/* Tùy chỉnh thanh slider cho các trình duyệt khác nhau */
+input[type="range"] {
+    -webkit-appearance: none;
+    height: 5px;
+    background: #d3d3d3;
+    border-radius: 5px;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #1DB954;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    background: #1DB954;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+.game-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 800px;
+}
+
+canvas#tetris {
+    background-color: var(--canvas-bg);
+    border: 2px solid var(--canvas-border);
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+    flex: 0 0 auto;
+    max-height: 80vh;
+}
+
+canvas#nextPiece {
+    background-color: transparent;
+    border: none;
+}
+
+.game-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    text-align: left;
+    min-width: 200px;
+    flex: 1;
+    max-width: 250px;
+}
+
+.score-container, .next-piece-container, .controls {
+    background-color: var(--card-bg);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px var(--button-shadow);
+    transition: background-color 0.3s;
+}
+
+.score-container {
+    text-align: center;
+    font-size: 1.1em;
+}
+
+.next-piece-container {
+    text-align: center;
+    background-color: transparent;
+}
+
+.controls {
+    font-size: 1.1em;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+/* Xác định rõ hiệu ứng khi hover cho các nút */
+button:hover {
+    background-color: #45a049;
+}
+
+#pauseBtn {
+    background-color: #FFC107;
+}
+
+#pauseBtn:hover {
+    background-color: #FFA000;
+}
+
+#resetBtn {
+    background-color: #f44336;
+}
+
+#resetBtn:hover {
+    background-color: #d32f2f;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* Mobile Controls */
+.mobile-controls {
+    display: none;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.mobile-controls-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.control-btn {
+    width: 80px;
+    height: 80px;
+    font-size: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent; /* Loại bỏ hiệu ứng highlight khi tap */
+}
+
+.control-btn:active {
+    transform: scale(0.9) translateY(4px);
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#rotateBtn {
+    background-color: rgba(106, 90, 205, 0.7);
+}
+
+#leftBtn, #rightBtn {
+    background-color: rgba(65, 105, 225, 0.7);
+}
+
+#dropBtn {
+    background-color: rgba(255, 165, 0, 0.7);
+}
+
+#hardDropBtn {
+    background-color: rgba(255, 69, 0, 0.7);
+    width: 180px;
+    border-radius: 40px;
+}
+
+/* Tùy chỉnh cho điện thoại nhỏ hơn */
+@media (max-width: 400px) {
+    .control-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 28px;
+    }
+    
+    #hardDropBtn {
+        width: 150px;
+    }
+    
+    .mobile-controls-row {
+        gap: 15px;
+    }
+}
+
+/* Chỉnh sửa media query cho mobile */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .game-container {
+        flex-direction: column;
+        align-items: center;
+        position: relative; /* Để định vị nút mini */
+        margin: 0 auto;
+        padding: 0;
+    }
+    
+    /* Điều chỉnh vị trí nút mini trên mobile */
+    .mobile-game-buttons {
+        display: flex !important;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        z-index: 100;
+    }
+    
+    .game-info {
+        width: 100%;
+        max-width: 100%;
+        margin-top: 20px;
+    }
+    
+    .header {
+        flex-direction: row;
+        gap: 5px;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .options {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        justify-content: center;
+        flex-wrap: nowrap;
+        width: 100%;
+    }
+    
+    .volume-control {
+        display: none;
+    }
+    
+    .sound-controls {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    /* Chỉnh kích thước nút âm thanh trên mobile */
+    .sound-controls .option-btn {
+        padding: 6px 10px;
+        font-size: 14px;
+        min-width: 0;
+    }
+    
+    /* Hiển thị next piece trong header thay cho volume control */
+    .options {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+    
+    .mobile-next-piece {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 5px;
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    
+    .mobile-next-piece p {
+        margin: 0 0 5px 0;
+        font-size: 14px;
+        font-weight: bold;
+        color: #fff;
+    }
+    
+    .mobile-next-piece canvas {
+        background-color: transparent;
+        margin: 0 auto;
+        display: block;
+    }
+    
+    canvas#tetris {
+        width: 100%;
+        max-width: 360px;
+        height: auto;
+    }
+    
+    .mobile-controls {
+        display: none;
+    }
+    
+    .controls {
+        display: none; /* Ẩn phần hiển thị điều khiển bàn phím trên mobile */
+    }
+    
+    /* Ẩn nút trong game-info */
+    .game-info .buttons #startBtn,
+    .game-info .buttons #pauseBtn {
+        display: none;
+    }
+}
+
+/* Ẩn mobile-next-piece trên desktop */
+.mobile-next-piece {
+    display: none;
+}
+
+@media (max-width: 1200px) {
+    .container {
+        padding: 10px;
+        margin: 10px;
+    }
+    
+    canvas#tetris {
+        max-height: 70vh;
+        width: auto;
+        height: auto;
+    }
+}
+
+/* Nút điều khiển mini cho mobile */
+.mobile-game-buttons {
+    display: none; /* Mặc định ẩn, chỉ hiện trên mobile */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 100; /* Đảm bảo nút hiển thị trên các phần tử khác */
+}
+
+.mobile-game-buttons button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 22px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    opacity: 0.95;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent; /* Loại bỏ hiệu ứng highlight khi tap */
+    border: none;
+}
+
+.mobile-button {
+    transition: transform 0.1s, background-color 0.2s;
+}
+
+.mobile-button:active {
+    transform: scale(0.9);
+}
+
+#startBtnMini {
+    background-color: #4CAF50;
+}
+
+#startBtnMini:active {
+    background-color: #3d8b40;
+}
+
+#pauseBtnMini {
+    background-color: #FFC107;
+}
+
+#pauseBtnMini:active {
+    background-color: #e6ac00;
+}
+
+/* Ghi đè style cho button để đảm bảo nút Sound và Music không bị ảnh hưởng */
+button#soundBtn, 
+button#musicBtn {
+    /* Ghi đè các thuộc tính có thể gây ra thay đổi kích thước */
+    transform: none !important;
+    -webkit-transform: none !important;
+    -moz-transform: none !important;
+    -ms-transform: none !important;
+    -o-transform: none !important;
+    transition: background-color 0.3s !important;
+    box-shadow: none !important;
+    scale: 1 !important;
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: auto !important; /* Sử dụng width tự động dựa trên nội dung */
+}
+
+button#soundBtn:hover, 
+button#musicBtn:hover,
+button#soundBtn:active, 
+button#musicBtn:active,
+button#soundBtn:focus, 
+button#musicBtn:focus {
+    /* Đảm bảo không có hiệu ứng kích thước trong mọi trạng thái */
+    transform: none !important;
+    -webkit-transform: none !important;
+    -moz-transform: none !important;
+    -ms-transform: none !important;
+    -o-transform: none !important;
+    box-shadow: none !important;
+    scale: 1 !important;
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+}
+
+/* Style riêng cho các nút tùy chọn (Sound và Music) */
+.option-btn {
+    padding: 8px 15px;
+    margin: 4px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: auto !important;
+    display: inline-block;
+    transform: none !important;
+    transition: background-color 0.3s !important;
+    font-size: 16px;
+    min-width: 120px;
+    box-sizing: border-box;
+}
+
+.option-btn:hover,
+.option-btn:active,
+.option-btn:focus {
+    transform: none !important;
+    box-shadow: none !important;
+    scale: 1 !important;
+}
+
+/* Không thay đổi width với .option-btn */
+#soundBtn.option-btn,
+#musicBtn.option-btn {
+    width: auto !important;
+}
+
+@media (max-width: 400px) {
+    /* Điều chỉnh vị trí nút mini trên điện thoại nhỏ */
+    .mobile-game-buttons {
+        right: 10px;
+        top: 10px;
+    }
+    
+    .mobile-game-buttons button {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+    
+    .control-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 28px;
+    }
+    
+    #hardDropBtn {
+        width: 150px;
+    }
+    
+    .mobile-controls-row {
+        gap: 15px;
+    }
+}
+
+/* Ghi đè style cho button để đảm bảo nút Sound và Music không bị ảnh hưởng */
+button#soundBtn, 
+button#musicBtn {
+    /* Ghi đè các thuộc tính có thể gây ra thay đổi kích thước */
+    transform: none !important;
+    -webkit-transform: none !important;
+    -moz-transform: none !important;
+    -ms-transform: none !important;
+    -o-transform: none !important;
+    transition: background-color 0.3s !important;
+    box-shadow: none !important;
+    scale: 1 !important;
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+}
